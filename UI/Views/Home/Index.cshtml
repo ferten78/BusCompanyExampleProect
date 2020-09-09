@@ -1,0 +1,378 @@
+﻿@using Entities;
+@model Passenger
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <title></title>
+    <style>
+        #seatInfo {
+            color: black;
+        }
+
+        .seat:hover {
+            background-color: #b6ff00;
+        }
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+           
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #000;
+                text-decoration: none;
+                cursor: pointer;
+            }
+    </style>
+</head>
+
+<body>
+    <div id="bus_border" class="bus"></div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form>
+                <div class="form-group">
+                    <h2>Yolcu Bilgileri</h2>
+                    <hr />
+                    <a id="seatInfo">Asd</a>
+                    <br />
+                    <br />
+                    <input class="form-control" type="text" placeholder="Adınızı giriniz" id="firstName" /><br />
+                    <input class="form-control" type="text" placeholder="Soyadınızı giriniz" id="lastName" /><br />
+
+
+                    <label>Cinsiyet seçiniz</label>
+                    <div class="radio">
+                        <label><input type="radio" name="optradio" id="btnCheck_male">Erkek</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="optradio" id="btnCheck_female">Kadın</label>
+                    </div>
+                    <button type="button" class="btn btn-success btn-block" id="btnSave" onclick="saveInfo()">Kaydet</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <script>
+
+        var passenger = new Array(46);
+        var passengerGender = new Array(46);
+        var seatNumber = 0;
+        var seatPositionLeft = 20;
+        var seatPositionTop = 100;
+        var row = false;
+        var selectSeatNumber = 0;
+        var rowCancel = false;
+
+        var busBorder = document.getElementById('bus_border');
+        busBorder.style.border = '1px solid #000000';
+        busBorder.style.width = '300px';
+        busBorder.style.height = '830px';
+        busBorder.style.marginLeft = '100px';
+        busBorder.style.marginTop = '100px';
+        busBorder.style.borderRadius = '20px';
+
+
+        addSeat();
+        backMessage();
+
+
+
+        function addFourSeat(rowNumber) {
+
+            for (var i = 0; i < 4; i++) {
+
+                seatNumber++;
+
+                var seats = document.createElement('div');
+                seats.id = 'seat' + seatNumber;
+                seats.dataset.seatNumber = (rowNumber * 4) + i + 1;
+                seats.className = 'seat';
+                seats.style.position = 'absolute';
+                seats.style.border = '1px solid #000000';
+                seats.style.marginTop = seatPositionTop + 'px';
+                seats.style.marginLeft = seatPositionLeft + 'px';
+                seats.style.height = '50px';
+                seats.style.width = '50px';
+                seats.style.borderRadius = '10px';
+                seats.style.color = 'black';
+                seats.innerHTML = seatNumber + '';
+
+
+                if (i > 1 && row == true) {
+                    seatNumber--;
+                    if (i > 2) {
+
+                        row = false;
+                    }
+                }
+                else {
+                    var bus = document.getElementById('bus_border');
+                    bus.appendChild(seats);
+                }
+
+
+                if (seatNumber % 2 == 0) {
+                    seatPositionLeft += 100;
+                }
+                else {
+                    seatPositionLeft += 55;
+
+                }
+
+                if (i == 3) {
+                    seatPositionLeft = 20;
+                }
+            }
+        }
+
+        function addSeat() {
+            for (var i = 0; i < 12; i++) {
+                if (i == 5) {
+                    row = true;
+
+                }
+                addFourSeat(i);
+                seatPositionTop += 55;
+
+            }
+
+        }
+
+        function backMessage() {
+
+            var message = document.createElement('div');
+            message.style.position = 'absolute';
+            message.style.marginTop = '800px';
+            message.style.marginLeft = '150px';
+            message.style.height = '20px';
+            message.style.width = '150px';
+            message.style.color = 'black';
+            message.innerHTML = 'Sen Soförsün dediler';
+
+            var bus = document.getElementById('bus_border');
+            bus.appendChild(message);
+
+            for (var i = 0; i < 2; i++) {
+
+
+                var headlight = document.createElement('div');
+                headlight.style.backgroundColor = '#fffed8';
+                headlight.style.position = 'absolute';
+                headlight.style.marginTop = '5px';
+                if (i == 1) {
+                    headlight.style.marginLeft = '243px';
+                    headlight.style.borderRadius = '5px 15px 0px 2px';
+                }
+                else {
+                    headlight.style.marginLeft = '5px';
+                    headlight.style.borderRadius = '15px 5px 2px 0px';
+                }
+                headlight.style.border = '1px solid #000000';
+                headlight.style.height = '20px';
+                headlight.style.width = '50px';
+                headlight.style.color = 'black';
+
+                bus.appendChild(headlight);
+            }
+
+        }
+
+        var seat = document.getElementsByClassName('seat');
+
+        for (var x in seat) {
+            seat[x].onclick = clickSeat;
+            //seat[x].onmouseover=onMouseOver;
+
+            seat[x].addEventListener("mouseenter", function (e) {
+
+                if (e.target.style.backgroundColor == 'pink') {
+
+                    e.target.style.height = "100px";
+                    e.target.style.width = '100px';
+                    e.target.style.zIndex = '10';
+
+                    var cancelButton = document.getElementById('buttonCancel');
+
+                    if (cancelButton == null) {
+                        var cancelButton = document.createElement('button');
+                        cancelButton.type = 'Button';
+                        cancelButton.id = 'buttonCancel';
+                        cancelButton.style.height = '79px';
+                        cancelButton.style.width = '99px';
+                        cancelButton.style.borderRadius = '15px 15px 15px 15px';
+                        cancelButton.style.backgroundColor = 'white';
+                        cancelButton.innerHTML = 'Bileti İptal Et';
+                        cancelButton.addEventListener("click", function (e) {
+                            //Açılan forma iptal et butonu ekle
+                        })
+                        e.target.appendChild(cancelButton);
+                    }
+
+
+                }
+                else if (e.target.style.backgroundColor == 'turquoise') {
+
+                    e.target.style.height = "100px";
+                    e.target.style.width = '100px';
+                    e.target.style.zIndex = '10';
+
+                    var cancelButton = document.getElementById('buttonCancel');
+
+                    if (cancelButton == null) {
+                        var cancelButton = document.createElement('button');
+                        cancelButton.type = 'Button';
+                        cancelButton.id = 'buttonCancel';
+                        cancelButton.style.height = '79px';
+                        cancelButton.style.width = '99px';
+                        cancelButton.style.borderRadius = '15px 15px 15px 15px';
+                        cancelButton.style.backgroundColor = 'white';
+                        cancelButton.innerHTML = 'Bileti İptal Et';
+                        cancelButton.addEventListener("click", function (e) {
+                            //Açılan forma iptal et butonu ekle
+                        })
+                        e.target.appendChild(cancelButton);
+                    }
+
+                }
+                else {
+
+                }
+
+
+            });
+
+            seat[x].addEventListener("mouseleave", function (e) {
+
+                e.target.style.height = "50px";
+                e.target.style.width = '50px';
+                e.target.style.zIndex = '0';
+                var cancelButton = document.getElementById('buttonCancel');
+                e.target.removeChild(cancelButton);
+            });
+        }
+
+        
+        function clickSeat(seatNumber) {
+
+
+            var modal = document.getElementById('myModal');
+            var btn = document.getElementById(this.id);
+            var str = this.id;
+            var number = str.split("seat", 2);
+            selectSeatNumber = number[1];
+
+
+            var span = document.getElementsByClassName("close")[0];
+
+            var seatInfo = document.getElementById('seatInfo');
+            seatInfo.innerHTML = 'Koltuk Numarası : ' + selectSeatNumber;
+
+
+
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+
+                }
+            }
+        }
+        
+        function saveInfo() {
+            var firstName = document.getElementById('firstName').value;
+            var lastName = document.getElementById('lastName').value;
+            var genderMale = document.getElementById('btnCheck_male').value;
+            var genderFamale = document.getElementById('btnCheck_female').value;
+            var modal = document.getElementById('myModal');
+            var female = document.getElementById('btnCheck_female');
+            var male = document.getElementById('btnCheck_male');
+
+
+
+            if (female.checked == true) {
+                passenger[selectSeatNumber] = firstName + ' ' + lastName;
+                
+                passengerGender[selectSeatNumber] = 'Kadın';
+
+                var seat = document.getElementById('seat' + selectSeatNumber);
+                seat.style.backgroundColor = 'pink';
+                modal.style.display = "none";
+            }
+
+
+            else if (male.checked == true) {
+                passenger[selectSeatNumber] = firstName + ' ' + lastName;
+                passengerGender[selectSeatNumber] = 'Erkek';
+
+                var seat = document.getElementById('seat' + selectSeatNumber);
+                seat.style.backgroundColor = 'turquoise ';
+                modal.style.display = "none";
+
+            }
+            else {
+                alert('Cinsiyet Seçiniz..');
+            }
+
+
+
+
+            //if (genderMale == true) {
+            //    passengerGender[selectSeatNumber.innerText] = genderMale;
+            //}
+            //else if (genderFamale==true) {
+            //    passengerGender[selectSeatNumber.innerText] = genderFamale;
+            //}
+            //else {
+            //    alert('Cinsiyet Seçiniz..');
+            //}
+
+
+        }
+
+
+
+    </script>
+</body>
+</html>
+
